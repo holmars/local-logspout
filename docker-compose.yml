@@ -1,0 +1,18 @@
+logstashshipper:
+  image: ehazlett/logstash
+  command: -f /etc/logstash-shipper.conf
+  volumes:
+    - logstash-shipper.conf:/etc/logstash-shipper.conf
+  ports:
+    - "5000:5000"
+    - "5000:5000/udp"
+  external_links:
+    - elkmock_redis_1:redis
+logspout:
+  image: gliderlabs/logspout:latest
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+  ports:
+    - "81:8000"
+  links:
+    - logstashshipper
